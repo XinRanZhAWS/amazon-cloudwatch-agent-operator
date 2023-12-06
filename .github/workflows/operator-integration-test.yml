@@ -1,11 +1,15 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
-name: Run EKS addon Integration Tests
+name: Run EKS op-int-test Integration Tests
 env:
   TERRAFORM_AWS_ASSUME_ROLE: ${{ secrets.TERRAFORM_AWS_ASSUME_ROLE }}
 
 on:
+  push:
+    branches:
+      - main*
+      - op-int-test
   workflow_dispatch:
     inputs:
       addon_name:
@@ -86,11 +90,17 @@ jobs:
           timeout_minutes: 60 # EKS takes about 20 minutes to spin up a cluster and service on the cluster
           retry_wait_seconds: 5
           command: |
-            cd integration-tests/terraform/eks
+            cd integration-tests/terraform/testbuild
 
             terraform init
-            if terraform apply -var="addon_name=${{  github.event.inputs.addon_name }}" -var="addon_version=${{ github.event.inputs.addon_version }}" -var="k8s_version=${{ matrix.arrays.k8sVersion }}" --auto-approve; then
-              terraform destroy -auto-approve
+            if terraform apply --auto-approve; then
+                cd -
+                kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
+                make deploy
+                sleep 120
+                kubectl get pod -A
+                kubectl get all -n amazon-cloudwatch
+                kubectl get crd
             else
               terraform destroy -auto-approve && exit 1
             fi
