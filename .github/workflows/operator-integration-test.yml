@@ -36,27 +36,38 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Build Docker Image
-        run: |
-          docker build -t $OPERATOR_IMAGE .
-          docker push $OPERATOR_IMAGE
-
-      - name: Update manager.yaml
-        run: |
-          sed -i "s|name: controller.*|name: controller\n  newName: $OPERATOR_IMAGE|" path/to/manager.yaml
-
-      - name: Apply Kubernetes manifests
-        run: |
-          kubectl apply -k path/to/manager.yaml
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: ${{ env.TERRAFORM_AWS_ASSUME_ROLE }}
           aws-region: us-west-2
+
+      - name: Login to ECR
+        if: steps.cached_binaries.outputs.cache-hit == false
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Set up Docker Buildx
+        if: steps.cached_binaries.outputs.cache-hit == false
+        uses: docker/setup-buildx-action@v1
+
+      - name: Set up QEMU
+        if: steps.cached_binaries.outputs.cache-hit == false
+        uses: docker/setup-qemu-action@v1
+
+      - name: Build Cloudwatch Agent Operator Image and push to ECR
+        uses: docker/build-push-action@v4
+        if: steps.cached_binaries.outputs.cache-hit == false
+        with:
+            file: ./Dockerfile
+            context: .
+            push: true
+            tags: ${{ env.ECR_OPERATOR_STAGING_IMAGE }}
+            platforms: linux/amd64, linux/arm64
+
+      - name: Update manager.yaml
+        run: |
+          sed -i "s|name: controller.*|name: controller\n  newName: $OPERATOR_IMAGE|" config/manager/manager.yaml
 
       - name: Verify Terraform version
         run: terraform --version
