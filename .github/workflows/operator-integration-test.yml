@@ -67,7 +67,7 @@ jobs:
 
       - name: Update manager.yaml
         run: |
-          sed -i "s|name: controller.*|name: controller\n  newName: $OPERATOR_IMAGE|" config/manager/manager.yaml
+          sed -i "s|name: controller.*|name: controller\n  newName: $OPERATOR_IMAGE|" config/manager/kustomization.yaml
 
       - name: Verify Terraform version
         run: terraform --version
@@ -95,6 +95,13 @@ jobs:
               terraform destroy -auto-approve && exit 1
             fi
 
+      - name: java Annotation testing
+        run: |
+          cd integration-tests/terraform/testbuild/cmd
+          go run ./test_default_and_ns_instrumentation_main.go
+          if [ $? -ne 0 ]; then
+            terraform destroy  -auto-approve && exit 1
+          fi
       - name: Terraform destroy
         if: ${{ cancelled() || failure() }}
         uses: nick-fields/retry@v2
