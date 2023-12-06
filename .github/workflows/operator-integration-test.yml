@@ -24,10 +24,6 @@ jobs:
   OperatorIntegrationTest:
     name: OperatorIntegrationTest
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        arrays: ${{ fromJson(needs.GenerateTestMatrix.outputs.eks_addon_matrix) }}
     permissions:
       id-token: write
       contents: read
