@@ -1,0 +1,77 @@
+# Default values for amazon-cloudwatch-observability.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+## Provide a name in place of cloudwatchagent-operator.
+##
+nameOverride: ""
+
+## Reference one or more secrets to be used when pulling images from authenticated repositories.
+imagePullSecrets: [ ]
+
+## Provide the ClusterName (optional when installing via EKS add-on)
+clusterName: EKS_CLUSTER_NAME
+
+## Provide the Region (optional when installing via EKS add-on)
+region: AWS_REGION_NAME
+
+## Admission webhooks make sure only requests with correctly formatted rules will get into the Operator.
+admissionWebhooks:
+  create: true
+  failurePolicy: Ignore
+  secretName: ""
+
+  ## Defines the sidecar injection logic in Pods.
+  ## - Ignore, the injection is fail-open. The pod will be created, but the sidecar won't be injected.
+  ## - Fail, the injection is fail-close. If the webhook pod is not ready, pods cannot be created.
+  pods:
+    failurePolicy: Ignore
+
+  ## Adds a prefix to the mutating webhook name.
+  ## This can be used to order this mutating webhook with all your cluster's mutating webhooks.
+  namePrefix: ""
+
+  ## Customize webhook timeout duration
+  timeoutSeconds: 10
+
+  ## Provide selectors for your objects
+  namespaceSelector: { }
+  objectSelector: { }
+
+  ## TLS Certificate Option 1: Use Helm to automatically generate self-signed certificate.
+  ## autoGenerateCert must be enabled. This is the default option.
+  ## If true, Helm will automatically create a self-signed cert and secret for you.
+
+agent:
+  name:
+  image:
+    repository: cloudwatch-agent
+    tag: 1.300031.1b317
+    repositoryDomainMap:
+      public: public.ecr.aws/cloudwatch-agent
+      cn-north-1: 934860584483.dkr.ecr.cn-north-1.amazonaws.com.cn
+      cn-northwest-1: 934860584483.dkr.ecr.cn-northwest-1.amazonaws.com.cn
+      us-gov-east-1: 743662458514.dkr.ecr.us-gov-east-1.amazonaws.com
+      us-gov-west-1: 743662458514.dkr.ecr.us-gov-west-1.amazonaws.com
+  enabled: true
+  serviceAccount:
+    name: # override agent service account name 
+  config: # optional config that can be provided to override the defaultConfig
+  defaultConfig:
+    {
+      "logs": {
+        "metrics_collected": {
+          "kubernetes": {
+            "enhanced_container_insights": true
+          },
+          "app_signals": { }
+        }
+      },
+      "traces": {
+        "traces_collected": {
+          "app_signals": { }
+        }
+      }
+    }

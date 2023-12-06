@@ -98,6 +98,7 @@ jobs:
                 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
                 make deploy
                 sleep 120
+                helm install cloudwatch-agent integration-tests/terraform/testbuild/helm --namespace amazon-cloudwatch
                 kubectl get pod -A
                 kubectl get all -n amazon-cloudwatch
                 kubectl get crd
