@@ -67,7 +67,8 @@ jobs:
 
       - name: Update manager.yaml
         run: |
-          sed -i "s|name: controller.*|name: controller\n  newName: $OPERATOR_IMAGE|" config/manager/kustomization.yaml
+          sed -i "s|\${OPERATOR_IMAGE}|$ECR_OPERATOR_STAGING_IMAGE|" config/manager/kustomization.yaml
+          cat config/manager/kustomization.yaml
 
       - name: Verify Terraform version
         run: terraform --version
