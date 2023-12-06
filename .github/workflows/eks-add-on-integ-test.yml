@@ -97,9 +97,10 @@ jobs:
                 cd -
                 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
                 make deploy
-                sleep 300
+                sleep 120
                 kubectl get pod -A
                 kubectl get all -n amazon-cloudwatch
+                kubectl get crd
             else
               terraform destroy -auto-approve && exit 1
             fi
