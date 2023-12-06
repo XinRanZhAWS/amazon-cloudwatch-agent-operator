@@ -11,7 +11,7 @@ variable "k8s_version" {
   default = "1.25"
 }
 
-# eks addon and helm tests are similar
+# eks addon and cloudwatch tests are similar
 variable "test_dir" {
   type    = string
   default = "../../eks"
