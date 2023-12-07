@@ -88,9 +88,9 @@ jobs:
                 make deploy
                 sleep 180
                 cd integration-tests/terraform/testbuild
-                kubectl apply -f ./sample-instrumentation.yaml
-                kubectl apply -f ./test-deployment.yaml
-                kubectl apply -f ./ns-annotation-test-deployment.yaml
+                kubectl apply -f sample-instrumentation.yaml
+                kubectl apply -f test-deployment.yaml
+                kubectl apply -f ns-annotation-test-deployment.yaml
                 sleep 60
                 kubectl get all -n amazon-cloudwatch
                 kubectl get pods -A
