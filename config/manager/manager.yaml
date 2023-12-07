@@ -27,7 +27,7 @@ spec:
         control-plane: controller-manager
     spec:
       containers:
-      - image: controller
+      - image: ${OPERATOR_IMAGE}
         name: manager
         resources:
           requests:

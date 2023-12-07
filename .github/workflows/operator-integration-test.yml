@@ -65,10 +65,10 @@ jobs:
             tags: ${{ env.ECR_OPERATOR_STAGING_IMAGE }}
             platforms: linux/amd64, linux/arm64
 
-#      - name: Update manager.yaml
-#        run: |
-#          sed -i "s|\${OPERATOR_IMAGE}|$ECR_OPERATOR_STAGING_IMAGE|" config/manager/kustomization.yaml
-#          cat config/manager/kustomization.yaml
+      - name: Update manager.yaml
+        run: |
+          sed -i "s|\${OPERATOR_IMAGE}|$ECR_OPERATOR_STAGING_IMAGE|" config/manager/manager.yaml
+          cat config/manager/manager.yaml
 
       - name: Verify Terraform version
         run: terraform --version
