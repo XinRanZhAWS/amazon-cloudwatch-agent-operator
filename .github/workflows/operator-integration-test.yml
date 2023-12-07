@@ -93,6 +93,8 @@ jobs:
                 kubectl apply -f ns-annotation-test-deployment.yaml
                 kubectl apply -f sample-instrumentation.yaml
                 kubectl apply -f test-deployment.yaml
+                sleep 60
+                kubectl describe pod
                 kubectl describe deploy -n amazon-cloudwatch
                 kubectl get pod -A
                 kubectl get all -n amazon-cloudwatch
