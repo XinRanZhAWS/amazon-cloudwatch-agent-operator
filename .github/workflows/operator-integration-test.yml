@@ -86,7 +86,7 @@ jobs:
             if terraform apply --auto-approve; then
                 cd -
                 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
-                make deploy
+                make kustomize && make release-artifacts IMG=506463145083.dkr.ecr.us-west-2.amazonaws.com/cwagent-operator-pre-release:latest
                 sleep 60
                 cd integration-tests/terraform/testbuild
                 kubectl apply -f agent_daemon_set.yaml
