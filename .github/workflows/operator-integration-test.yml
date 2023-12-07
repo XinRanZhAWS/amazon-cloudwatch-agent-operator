@@ -86,8 +86,8 @@ jobs:
             if terraform apply --auto-approve; then
                 cd ../../../config/crd
                 kubectl apply -f kustomization.yaml
-                cd ../certificate
-                kubectl apply -f certificate.yaml
+                cd ../certmanager
+                kubectl apply -f kustomization.yaml
                 cd -
                 make deploy
                 sleep 180
