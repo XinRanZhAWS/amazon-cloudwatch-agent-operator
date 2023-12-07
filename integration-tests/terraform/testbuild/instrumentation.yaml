@@ -11,7 +11,7 @@ spec:
     - b3
     - xray
   java:
-    image: 506463145083.dkr.ecr.us-west-2.amazonaws.com/cwagent-operator-pre-release:latest
+    image: public.ecr.aws/aws-observability/adot-autoinstrumentation-java:v1.31.1
     env:
       - name: OTEL_METRICS_EXPORTER
         value: "none"
