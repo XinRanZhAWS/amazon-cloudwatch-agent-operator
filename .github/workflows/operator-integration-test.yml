@@ -87,10 +87,10 @@ jobs:
                 cd -
                 echo "running make manifesr"
                 make manifests
-                echo "running make install-cert"
-                make install-cert
                 echo "running make install"
                 make install
+                echo "running make install-cert"
+                make install-cert
                 echo "running make deploy"
                 make deploy
             
