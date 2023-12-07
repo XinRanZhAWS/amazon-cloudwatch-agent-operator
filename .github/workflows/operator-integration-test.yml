@@ -85,6 +85,7 @@ jobs:
             terraform init
             if terraform apply --auto-approve; then
                 cd -
+                make install
                 make deploy
                 sleep 180
                 cd integration-tests/terraform/testbuild
