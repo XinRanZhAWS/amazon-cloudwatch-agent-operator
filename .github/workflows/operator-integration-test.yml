@@ -84,6 +84,9 @@ jobs:
 
             terraform init
             if terraform apply --auto-approve; then
+                cd -
+                make deploy
+                cd integration-tests/terraform/testbuild
                 kubectl apply -f ns-annotation-test-deployment.yaml
                 kubectl apply -f sample-instrumentation.yaml
                 kubectl apply -f test-deployment.yaml
