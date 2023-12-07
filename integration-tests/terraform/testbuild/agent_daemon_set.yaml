@@ -2,7 +2,7 @@ apiVersion: cloudwatch.aws.amazon.com/v1alpha1
 kind: AmazonCloudWatchAgent
 metadata:
   name: cloudwatch-agent
-  namespace: amazon-cloudwatch
+  namespace: system
 spec:
   mode: daemonset
   serviceAccount: cloudwatch-agent
