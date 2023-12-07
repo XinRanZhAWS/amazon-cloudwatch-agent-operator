@@ -84,7 +84,9 @@ jobs:
 
             terraform init
             if terraform apply --auto-approve; then
-                cd ../../../config/certmanager
+                cd ../../../config/crd
+                kubectl apply -f kustomization.yaml
+                cd ../certificate
                 kubectl apply -f certificate.yaml
                 cd -
                 make deploy
