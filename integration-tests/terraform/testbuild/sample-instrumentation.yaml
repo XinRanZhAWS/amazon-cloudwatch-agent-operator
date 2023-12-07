@@ -18,5 +18,3 @@ spec:
     - tracecontext
     - baggage
     - b3
-  java:
-    image: public.ecr.aws/aws-observability/adot-autoinstrumentation-java:v1.31.1
