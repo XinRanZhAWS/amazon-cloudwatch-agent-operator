@@ -92,7 +92,6 @@ jobs:
                 kubectl apply -f agent_daemon_set.yaml
                 kubectl apply -f ns-annotation-test-deployment.yaml
                 kubectl apply -f sample-instrumentation.yaml
-                kubectl apply -f instrumentation.yaml
                 kubectl apply -f test-deployment.yaml
                 sleep 60
                 kubectl describe pod
