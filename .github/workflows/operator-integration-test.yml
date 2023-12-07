@@ -65,10 +65,10 @@ jobs:
 #            tags: ${{ env.ECR_OPERATOR_STAGING_IMAGE }}
 #            platforms: linux/amd64, linux/arm64
 
-      - name: Update manager.yaml
-        run: |
-          sed -i "s|\${OPERATOR_IMAGE}|$ECR_OPERATOR_STAGING_IMAGE|" config/manager/kustomization.yaml
-          cat config/manager/kustomization.yaml
+#      - name: Update manager.yaml
+#        run: |
+#          sed -i "s|\${OPERATOR_IMAGE}|$ECR_OPERATOR_STAGING_IMAGE|" config/manager/kustomization.yaml
+#          cat config/manager/kustomization.yaml
 
       - name: Verify Terraform version
         run: terraform --version
@@ -86,7 +86,7 @@ jobs:
             if terraform apply --auto-approve; then
                 cd -
                 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
-                make kustomize && make release-artifacts IMG=506463145083.dkr.ecr.us-west-2.amazonaws.com/cwagent-operator-pre-release:latest
+                make deploy
                 sleep 60
                 cd integration-tests/terraform/testbuild
                 kubectl apply -f agent_daemon_set.yaml
