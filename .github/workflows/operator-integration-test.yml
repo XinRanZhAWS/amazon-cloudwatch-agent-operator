@@ -96,8 +96,10 @@ jobs:
                 kubectl apply -f sample-instrumentation.yaml
                 kubectl apply -f test-deployment.yaml
                 kubectl apply -f ns-annotation-test-deployment.yaml
+                kubectl apply -f agent_daemon_set.yaml
                 sleep 120
                 kubectl get all -n amazon-cloudwatch
+                kubectl describe pod
                 kubectl get pods -A
                 kubectl describe deployment cloudwatch-controller-manager -n amazon-cloudwatch
                 kubectl describe deployment nginx -n amazon-cloudwatch
