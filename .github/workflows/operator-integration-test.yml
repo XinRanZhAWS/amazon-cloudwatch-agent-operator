@@ -85,17 +85,12 @@ jobs:
             terraform init
             if terraform apply --auto-approve; then
                 cd -
-                echo "running make container"
-                make container
-                echo "running make manifesr"
-                make manifests
+                echo "running make test certificate"
+                kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
                 echo "running make install"
                 make install
-                echo "running make install-cert"
-                make install-cert
                 echo "running make deploy"
                 make deploy
-            
                 sleep 180
                 cd integration-tests/terraform/testbuild
                 kubectl apply -f sample-instrumentation.yaml
