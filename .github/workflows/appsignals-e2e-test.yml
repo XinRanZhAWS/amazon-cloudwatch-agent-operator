@@ -35,9 +35,10 @@ jobs:
       - uses: actions/checkout@v3
         with:
           # Checkout e2e-test branch and get only the required resources for testing
-          ref: e2e-test
+          repository: aws-observability/aws-otel-java-instrumentation
+          ref: main
           sparse-checkout: |
-            test
+            testing
 
       - name: Generate testing id
         run: echo TESTING_ID="${{ github.run_id }}-${{ github.run_number }}" >> $GITHUB_ENV
@@ -83,7 +84,7 @@ jobs:
           terraform_wrapper: false
 
       - name: Deploy sample app via terraform
-        working-directory: test/terraform/eks
+        working-directory: testing/terraform/eks
         run: |
           terraform init
           terraform validate
@@ -139,7 +140,7 @@ jobs:
       - name: Get the sample app endpoint
         run: |
           echo "APP_ENDPOINT=$(terraform output sample_app_endpoint)" >> $GITHUB_ENV
-        working-directory: test/terraform/eks
+        working-directory: testing/terraform/eks
 
       - name: Wait for app endpoint to come online
         run: |
@@ -159,7 +160,7 @@ jobs:
       # Validation for app signals telemetry data
       - name: Call endpoint and validate generated EMF logs
         id: log-validation
-        working-directory: test/validator
+        working-directory: testing/validator
         run: ./gradlew run --args='-c log-validation.yml
           --testing-id ${{ env.TESTING_ID }}
           --endpoint http://${{ env.APP_ENDPOINT }}
@@ -177,7 +178,7 @@ jobs:
       - name: Call endpoints and validate generated metrics
         id: metric-validation
         if: success() || steps.log-validation.outcome == 'failure'
-        working-directory: test/validator
+        working-directory: testing/validator
         run: ./gradlew run --args='-c metric-validation.yml
           --testing-id ${{ env.TESTING_ID }}
           --endpoint http://${{ env.APP_ENDPOINT }}
@@ -195,7 +196,7 @@ jobs:
 
       - name: Call endpoints and validate generated traces
         if: success() || steps.log-validation.outcome == 'failure' || steps.metric-validation.outcome == 'failure'
-        working-directory: test/validator
+        working-directory: testing/validator
         run: ./gradlew run --args='-c trace-validation.yml
           --testing-id ${{ env.TESTING_ID }}
           --endpoint http://${{ env.APP_ENDPOINT }}
@@ -237,7 +238,7 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
-          cd test/terraform/eks
+          cd testing/terraform/eks
           terraform destroy -auto-approve \
             -var="test_id=${{ env.TESTING_ID }}" \
             -var="kube_directory_path=${{ github.workspace }}/.kube" \
