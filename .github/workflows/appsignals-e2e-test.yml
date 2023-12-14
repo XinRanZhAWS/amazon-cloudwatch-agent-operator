@@ -11,6 +11,9 @@ on:
       caller-workflow-name:
         required: true
         type: string
+      ecr-ops-image:
+        required: true
+        type: string
 
 permissions:
   id-token: write
