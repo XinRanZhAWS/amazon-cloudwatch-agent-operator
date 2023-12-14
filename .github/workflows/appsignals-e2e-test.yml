@@ -105,16 +105,16 @@ jobs:
       - name: Pull and unzip enablement script from S3
         run: aws s3 cp ${{ env.ENABLEMENT_SCRIPT_S3_BUCKET }} . && unzip -j onboarding.zip
 
-      - name: Set the CW Agent Operator image to the staging image in the manifest
-        if: inputs.caller-workflow-name == 'build-and-upload-staging'
-        run: "sed -i 's#${{ env.ECR_OPERATOR_RELEASE_IMAGE }}#${{ env.ECR_OPERATOR_STAGING_IMAGE }}#g' app-signals.yaml"
-
       - name: Enable App Signals
         run: |
           ./enable-app-signals.sh \
           ${{ inputs.test-cluster-name }} \
           ${{ env.AWS_DEFAULT_REGION }} \
           ${{ env.SAMPLE_APP_NAMESPACE }}
+
+      - name: Update based on new Image
+        run: |
+          kubectl patch deploy -n amazon-cloudwatch amazon-cloudwatch-observability-controller-manager -p '[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value": "${{ env.ECR_OPERATOR_STAGING_IMAGE }}"}]'
           
       # Application pods need to be restarted for the
       # app signals instrumentation to take effect
